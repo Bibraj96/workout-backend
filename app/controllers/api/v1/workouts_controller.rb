@@ -1,2 +1,2 @@
-class API::V1::WorkoutsController < ApplicationController
+class Api::V1::WorkoutsController < ApplicationController
 end
