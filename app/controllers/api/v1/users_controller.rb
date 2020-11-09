@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  before_action :set_user, only: [:show, :update, :destroy]
   # kept getting "password can't be blank" error without wrap_parameters
   wrap_parameters :user, include: [:email, :username, :password, :password_confirmation]
 
