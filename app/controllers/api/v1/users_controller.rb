@@ -1,4 +1,6 @@
 class Api::V1::UsersController < ApplicationController
+  # kept getting "password can't be blank" error without wrap_parameters
+  wrap_parameters :user, include: [:email, :username, :password, :password_confirmation]
 
   def index
     users = User.all
@@ -7,14 +9,14 @@ class Api::V1::UsersController < ApplicationController
 
   def create
     user = User.new(user_params)
-    byebug
     if user.save
-      render json: user, staus: :created
+      session[:user_id] = user.id
+      render json: user, status: :created
     else
       resp = {
         error: user.errors.full_messages.to_sentence
       }
-      render json: resp, status :unprocessable_entity
+      render json: resp, status: :unprocessable_entity
     end
   end
 
