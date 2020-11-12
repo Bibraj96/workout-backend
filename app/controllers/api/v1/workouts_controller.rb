@@ -17,6 +17,16 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def create
+    workout = Workout.new(workout_params)
+    byebug
+    if workout.save
+      render json: workout, status: :created
+    else
+      resp = {
+        error: workout.errors.full_messages.to_sentence
+      }
+      render json: resp, status: :unprocessable_entity
+    end
   end
 
   private
@@ -26,7 +36,7 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def workout_params
-    params.require(:workout).permit(:title, :date)
+    params.require(:workout).permit(:title, :date, :user_id)
   end
   
 end
