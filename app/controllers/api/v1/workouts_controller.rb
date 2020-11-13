@@ -18,7 +18,6 @@ class Api::V1::WorkoutsController < ApplicationController
 
   def create
     workout = Workout.new(workout_params)
-    byebug
     if workout.save
       render json: workout, status: :created
     else
