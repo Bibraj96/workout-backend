@@ -1,5 +1,5 @@
 class Api::V1::WorkoutsController < ApplicationController
-  before_action :set_workout, only: [:show, :update, :destroy]
+  before_action :set_workout, only: [:show, :destroy]
 
   def index
     if logged_in?
@@ -17,9 +17,21 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def create
-    workout = Workout.new(workout_params)
+    workout = current_user.workouts.build(workout_params)
     if workout.save
       render json: workout, status: :created
+    else
+      resp = {
+        error: workout.errors.full_messages.to_sentence
+      }
+      render json: resp, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    workout = Workout.find(params[:id])
+    if workout.update(workout_params)
+      render json: workout, status: :ok
     else
       resp = {
         error: workout.errors.full_messages.to_sentence
@@ -35,7 +47,7 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def workout_params
-    params.require(:workout).permit(:title, :date, :user_id)
+    params.require(:workout).permit(:title, :date)
   end
   
 end
